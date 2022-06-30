@@ -32,3 +32,11 @@ variable "port"{
   type    = string
   default = "80"
 }
+
+variable "tags" {
+  default = {
+    name = "${var.ami_name}"
+  }
+
+  type = map(string)
+}
