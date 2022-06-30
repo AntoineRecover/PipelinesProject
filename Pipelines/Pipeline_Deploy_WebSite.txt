@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+    environment {
+        GitBranch = "main"
+        EC2_IP = "$EC2IP"
+    }
+    stages {
+        stage ("Clean Jenkins workspace before start") {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage ("checkout_git") {
+            steps {
+                sh "pwd"
+                dir("Deploy_Webserv") {
+                    sh "pwd"
+                    git(
+                        url: 'git@github.com:AntoineRecover/PipelinesProject.git',
+                        credentialsId: "$GitCredentials",
+                        branch: "${GitBranch}"
+                    )
+                    sh "ls"
+                }
+            }
+        }
+        
+        stage ("Deploy_Webserv"){
+            steps {
+                dir("Deploy_Webserv") {
+                    dir("Terraform"){
+                        dir("deploy_webserv"){
+                            sh "pwd"
+                            sh "ls"
+                            
+                            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+                                sh "terraform init -backend-config='bucket=cicdantoinec' -backend-config='key=$APP_NAME/$ENV/webserv.tfstate' -backend-config='region=eu-west-3'"
+                                sh "terraform apply -auto-approve" 
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
