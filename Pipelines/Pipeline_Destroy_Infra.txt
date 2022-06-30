@@ -11,16 +11,32 @@ pipeline {
             }
         }
         
+        stage ("checkout_git") {
+            steps {
+                sh "pwd"
+                dir("Destroy_Infra") {
+                    sh "pwd"
+                    git(
+                        url: 'git@github.com:AntoineRecover/PipelinesProject.git',
+                        credentialsId: "$GitCredentials",
+                        branch: "${GitBranch}"
+                    )
+                    sh "ls"
+                }
+            }
+        }
+        
         stage ("Destroy_Infra"){
             steps {
-                dir("..") {
-                    dir("deploy_infra"){
-                        dir("Deploy_Infra"){
-                            dir("Terraform"){
-                                sh "pwd"
-                                sh "ls"
+                dir("Destroy_Infra"){
+                    dir("Terraform"){
+                        dir("deploy_infra"){
+                            sh "pwd"
+                            sh "ls"
                                 
-                                sh "terraform destroy -auto-approve"
+                            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+                                sh "terraform init -backend-config='bucket=cicdantoinec' -backend-config='key=$APP_NAME/$ENV/infra.tfstate' -backend-config='region=eu-west-3'"
+                                sh "terraform destroy -auto-approve" 
                             }
                         }
                     }
