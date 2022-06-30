@@ -5,6 +5,6 @@ build {
   }
   provisioner "ansible" {
     playbook_file = "./play.yml"
-    extra_arguments = [ "--extra-vars", "pcks=${var.pcks}" "port=${var.port}" ]
+    extra_arguments = [ "--extra-vars", "pcks=${var.pcks}", "port=${var.port}" ]
   }
 }
