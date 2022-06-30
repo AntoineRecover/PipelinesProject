@@ -1,10 +1,16 @@
 ---
 - hosts: all
   tasks:
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+        upgrade: yes
+        update_cache: yes
+
     - name: Install Packages
       become: yes
       apt:
-        name: '{{ pcks }}'
+        name: "{{ pcks }}"
         update_cache: true
         state: latest
 
