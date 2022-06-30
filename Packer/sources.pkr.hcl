@@ -5,7 +5,4 @@ source "amazon-ebs" "web-instance" {
   source_ami                  = "${var.base_ami}"
   instance_type               = "${var.instance_type}"
   associate_public_ip_address = true
-
-  run_tags = "${var.tags}"
-
 }
