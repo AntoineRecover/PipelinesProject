@@ -17,7 +17,7 @@ pipeline {
                 dir("Deploy_Infra") {
                     sh "pwd"
                     git(
-                        url: 'git@github.com:nsxfrtn/Projet_DevOps.git',
+                        url: 'git@github.com:AntoineRecover/PipelinesProject.git',
                         credentialsId: "$GitCredentials",
                         branch: "${GitBranch}"
                     )
@@ -30,14 +30,18 @@ pipeline {
             steps {
                 dir("Deploy_Infra") {
                     dir("Terraform"){
-                        sh "pwd"
-                        sh "ls"
-                        
-                        sh "terraform init -backend-config='bucket=nomS3' -backend-config='key=$APP_NAME/$ENV/infra.tfstate' -backend-config='region=eu-west-3'"
-                        sh "terraform apply -auto-approve"   
+                        dir("deploy_infra"){
+                            sh "pwd"
+                            sh "ls"
+                            
+                            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+                                sh "terraform init -backend-config='bucket=cicdantoinec' -backend-config='key=$APP_NAME/$ENV/infra.tfstate' -backend-config='region=eu-west-3'"
+                                sh "terraform apply -auto-approve" 
+                            }
+                        }
                     }
                 }
             }
-        }       
+        }
     }
 }
