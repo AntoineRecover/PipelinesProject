@@ -28,7 +28,7 @@ data "aws_ami" "selected" {
   }
   filter {
     name   = "tag:Name"
-    values = ["PackerAnsible-Apache"]
+    values = ["*PackerAnsible-Apache*"]
   }
 }
 
