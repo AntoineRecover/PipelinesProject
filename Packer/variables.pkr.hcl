@@ -23,7 +23,12 @@ variable "subnet_id" {
   default = "subnet-03526017b01a32b7a"
 }
 
- variable "pcks"{
+variable "pcks"{
   type    = string
   default = "python3,git,apache2"
- }
+}
+
+variable "port"{
+  type    = string
+  default = "80"
+}

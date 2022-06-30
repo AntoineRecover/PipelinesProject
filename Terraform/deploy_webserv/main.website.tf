@@ -1,19 +1,5 @@
-terraform {
-  backend "s3" {
-    bucket = ""
-    key = ""
-    region = ""
-  }
-}
-
 provider "aws" {
-  region = "eu-west-3"
-}
-
-# Variables normalement dans un autre fichier (variables.tf) mais pour faire simple.... ca marche aussi !!!
-variable "env" {
-  type    = string
-  default = "dev"
+  region = "${var.region}"
 }
 
 ####################################################################
@@ -27,7 +13,7 @@ data "aws_ami" "selected" {
   }
   filter {
     name   = "tag:Name"
-    values = ["*PackerAnsible-Apache*"]
+    values = ["${var.ami_name}"]
   }
   most_recent = true
 }
@@ -93,9 +79,9 @@ resource "aws_security_group" "web-sg-asg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port       = 443
+    from_port       = var.port
     protocol        = "tcp"
-    to_port         = 443
+    to_port         = var.port
     security_groups = [aws_security_group.web-sg-elb.id] # on authorise en entrée de l'ASG que le flux venant de l'ELB
   }
   lifecycle {
@@ -113,9 +99,9 @@ resource "aws_security_group" "web-sg-elb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 443
+    from_port   = var.port
     protocol    = "tcp"
-    to_port     = 443
+    to_port     = var.port
     cidr_blocks = ["0.0.0.0/0"]   # Normalement Ouvert sur le web sauf dans le cas d'un site web Privé(Exemple Intranet ou nous qui ne voulons pas exposer le site)
   }
   lifecycle {
@@ -162,16 +148,16 @@ resource "aws_elb" "web-elb" {
   security_groups = [aws_security_group.web-sg-elb.id]
 
   listener {
-    instance_port     = 443
+    instance_port     = var.port
     instance_protocol = "http"
-    lb_port           = 443
+    lb_port           = var.port
     lb_protocol       = "http"
   }
 
   health_check {
     healthy_threshold   = 2
     interval            = 30
-    target              = "HTTP:443/"
+    target              = "HTTP:${var.port}/"
     timeout             = 3
     unhealthy_threshold = 2
   }
