@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = ""
+    key = ""
+    region = ""
+  }
+}
+
 provider "aws" {
   region = "eu-west-3"
 }
@@ -5,12 +13,6 @@ provider "aws" {
 variable "env" {
   type    = string
   default = "dev"
-}
-
-backend "s3" {
-  bucket = ""
-  key = ""
-  region = ""
 }
 
 # VPC
