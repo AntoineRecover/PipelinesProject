@@ -33,10 +33,12 @@ pipeline {
                         sh "pwd"
                         sh "ls"
                         
-                        sh "packer init ."
-                        sh "packer fmt ."
-                        sh "packer validate ."
-                        sh "packer build -var region=$region -var subnet_id=$subnet_id -var ami_name=$ami_name -var port=$port -var pcks=$pcks . "
+                        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+                            sh "packer init ."
+                            sh "packer fmt ."
+                            sh "packer validate ."
+                            sh "packer build -var region=$region -var subnet_id=$subnet_id -var ami_name=$ami_name -var port=$port -var pcks=$pcks . "
+                        }
                     }
                 }
             }
