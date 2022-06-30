@@ -18,7 +18,7 @@ variable "region" {
 
 variable "ami_name" {
     type = string
-    default = "PackerAnsible-Apache"
+    default = "WebServ"
 }
 
 variable "port" {
