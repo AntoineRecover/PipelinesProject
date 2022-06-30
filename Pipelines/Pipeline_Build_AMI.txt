@@ -17,7 +17,7 @@ pipeline {
                 dir("Build_WebAMI") {
                     sh "pwd"
                     git(
-                        url: 'git@github.com:nsxfrtn/Projet_DevOps.git',
+                        url: 'git@github.com:AntoineRecover/PipelinesProject.git',
                         credentialsId: "$GitCredentials",
                         branch: "${GitBranch}"
                     )
