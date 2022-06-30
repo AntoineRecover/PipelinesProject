@@ -10,7 +10,7 @@ variable "instance_type" {
 
 variable "ami_name" {
   type    = string
-  default = "web-instance"
+  default = "PackerAnsible-Apache"
 }
 
 variable "base_ami" {
