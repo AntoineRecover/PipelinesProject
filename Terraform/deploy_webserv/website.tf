@@ -20,7 +20,6 @@ variable "env" {
 # On recherche la derniere AMI créée avec le Name TAG PackerAnsible-Apache
 data "aws_ami" "selected" {
   owners = ["self"]
-  most_recent = true
   filter {
     name   = "state"
     values = ["available"]
@@ -30,6 +29,7 @@ data "aws_ami" "selected" {
     name   = "tag:Name"
     values = ["*PackerAnsible-Apache*"]
   }
+  most_recent = true
 }
 
 # On recupere les ressources reseau
