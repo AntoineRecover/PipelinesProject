@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    environment {
+        GitBranch = "main"
+        EC2_IP = "$EC2IP"
+    }
+    stages {
+        stage ("Clean Jenkins workspace before start") {
+            steps {
+                cleanWs()
+            }
+        }
+        
+        stage ("Destroy_Infra"){
+            steps {
+                dir("..") {
+                    dir("deploy_infra"){
+                        dir("Deploy_Infra"){
+                            dir("Terraform"){
+                                sh "pwd"
+                                sh "ls"
+                                
+                                sh "terraform destroy -auto-approve"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

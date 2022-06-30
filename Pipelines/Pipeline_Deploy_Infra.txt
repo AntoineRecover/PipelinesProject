@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    environment {
+        GitBranch = "main"
+        EC2_IP = "$EC2IP"
+    }
+    stages {
+        stage ("Clean Jenkins workspace before start") {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage ("checkout_git") {
+            steps {
+                sh "pwd"
+                dir("Deploy_Infra") {
+                    sh "pwd"
+                    git(
+                        url: 'git@github.com:nsxfrtn/Projet_DevOps.git',
+                        credentialsId: "$GitCredentials",
+                        branch: "${GitBranch}"
+                    )
+                    sh "ls"
+                }
+            }
+        }
+        
+        stage ("Deploy_Infra"){
+            steps {
+                dir("Deploy_Infra") {
+                    dir("Terraform"){
+                        sh "pwd"
+                        sh "ls"
+                        
+                        sh "terraform init -backend-config='bucket=nomS3' -backend-config='key=$APP_NAME/$ENV/infra.tfstate' -backend-config='region=eu-west-3'"
+                        sh "terraform apply -auto-approve"   
+                    }
+                }
+            }
+        }       
+    }
+}

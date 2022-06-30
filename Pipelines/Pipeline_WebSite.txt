@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+    environment {
+        GitBranch = "master"
+    }
+    stages {
+        stage ("Clean Jenkins workspace before start") {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage ("check_vars") {
+            steps {
+                sh "echo $APP_NAME"
+                sh "echo $ENV"
+            }
+        }
+
+        stage('Checkout and Build') {
+            steps {
+            }
+        }
+    }
+}
