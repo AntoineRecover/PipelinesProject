@@ -12,7 +12,7 @@ data "aws_ami" "selected" {
 
   }
   filter {
-    name   = "Name"
+    name   = "name"
     values = ["${var.ami_name}"]
   }
   most_recent = true
