@@ -11,7 +11,7 @@ resource "aws_vpc" "vpc" {
   instance_tenancy     = "default"
 
   tags = {
-    Name = "${var.env}-vpc"
+    Name = "${var.env}-${var.project_name}-vpc"
   }
 }
 
@@ -20,7 +20,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.env}-igw"
+    Name = "${var.env}-${var.project_name}-igw"
   }
 }
 
@@ -33,7 +33,7 @@ resource "aws_subnet" "subnet-public-1" {
   map_public_ip_on_launch = "true"
   availability_zone       = "eu-west-3a"
   tags = {
-    Name = "${var.env}-subnet-public-1"
+    Name = "${var.env}-${var.project_name}-subnet-public-1"
   }
 }
 
@@ -44,7 +44,7 @@ resource "aws_subnet" "subnet-public-2" {
   map_public_ip_on_launch = "true"
   availability_zone       = "eu-west-3b"
   tags = {
-    Name = "${var.env}-subnet-public-2"
+    Name = "${var.env}-${var.project_name}-subnet-public-2"
   }
 }
 
@@ -55,7 +55,7 @@ resource "aws_subnet" "subnet-public-3" {
   map_public_ip_on_launch = "true"
   availability_zone       = "eu-west-3c"
   tags = {
-    Name = "${var.env}-subnet-public-3"
+    Name = "${var.env}-${var.project_name}-subnet-public-3"
   }
 }
 
@@ -67,7 +67,7 @@ resource "aws_subnet" "subnet-private-1" {
   map_public_ip_on_launch = "false"
   availability_zone       = "eu-west-3a"
   tags = {
-    Name = "${var.env}-subnet-private-1"
+    Name = "${var.env}-${var.project_name}-subnet-private-1"
   }
 }
 
@@ -78,7 +78,7 @@ resource "aws_subnet" "subnet-private-2" {
   map_public_ip_on_launch = "false"
   availability_zone       = "eu-west-3b"
   tags = {
-    Name = "${var.env}-subnet-private-2"
+    Name = "${var.env}-${var.project_name}-subnet-private-2"
   }
 }
 
@@ -89,7 +89,7 @@ resource "aws_subnet" "subnet-private-3" {
   map_public_ip_on_launch = "false"
   availability_zone       = "eu-west-3c"
   tags = {
-    Name = "${var.env}-subnet-private-3"
+    Name = "${var.env}-${var.project_name}-subnet-private-3"
   }
 }
 
@@ -108,7 +108,7 @@ resource "aws_instance" "nat" {
   EOF
 
   tags = {
-    Name = "${var.env}-NatInstance"
+    Name = "${var.env}-${var.project_name}-NatInstance"
   }
 }
 
@@ -151,7 +151,7 @@ resource "aws_default_route_table" "main-private" {
   }
 
   tags = {
-    Name = "${var.env}-rt-main-private"
+    Name = "${var.env}-${var.project_name}-rt-main-private"
   }
 }
 
@@ -165,7 +165,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "${var.env}-rt-public"
+    Name = "${var.env}-${var.project_name}-rt-public"
   }
 }
 
