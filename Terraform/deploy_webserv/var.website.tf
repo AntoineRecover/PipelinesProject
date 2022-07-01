@@ -16,9 +16,9 @@ variable "region" {
   default = "eu-west-3"
 }
 
-variable "ami_name" {
+variable "project_name" {
     type = string
-    default = "PackerAnsible-Apache"
+    default = ""
 }
 
 variable "port" {

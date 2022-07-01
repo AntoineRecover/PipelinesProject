@@ -13,7 +13,7 @@ data "aws_ami" "selected" {
   }
   filter {
     name   = "name"
-    values = ["${var.ami_name}"]
+    values = ["${var.env}-${var.project_name}"]
   }
   most_recent = true
 }
@@ -22,44 +22,44 @@ data "aws_ami" "selected" {
 ## VPC
 data "aws_vpc" "selected" {
   tags = {
-    Name = "${var.env}-vpc"
+    Name = "${var.env}-${var.project_name}-vpc"
   }
 }
 
 ## Subnets
 data "aws_subnet" "subnet-public-1" {
   tags = {
-    Name = "${var.env}-subnet-public-1"
+    Name = "${var.env}-${var.project_name}-subnet-public-1"
   }
 }
 
 data "aws_subnet" "subnet-public-2" {
   tags = {
-    Name = "${var.env}-subnet-public-2"
+    Name = "${var.env}-${var.project_name}-subnet-public-2"
   }
 }
 
 data "aws_subnet" "subnet-public-3" {
   tags = {
-    Name = "${var.env}-subnet-public-3"
+    Name = "${var.env}-${var.project_name}-subnet-public-3"
   }
 }
 
 data "aws_subnet" "subnet-private-1" {
   tags = {
-    Name = "${var.env}-subnet-private-1"
+    Name = "${var.env}-${var.project_name}-subnet-private-1"
   }
 }
 
 data "aws_subnet" "subnet-private-2" {
   tags = {
-    Name = "${var.env}-subnet-private-2"
+    Name = "${var.env}-${var.project_name}-subnet-private-2"
   }
 }
 
 data "aws_subnet" "subnet-private-3" {
   tags = {
-    Name = "${var.env}-subnet-private-3"
+    Name = "${var.env}-${var.project_name}-subnet-private-3"
   }
 }
 
@@ -70,7 +70,7 @@ data "aws_availability_zones" "all" {}
 # Security Groups
 ## ASG
 resource "aws_security_group" "web-sg-asg" {
-  name   = "${var.env}-sg-asg"
+  name   = "${var.env}-${var.project_name}-sg-asg"
   vpc_id = data.aws_vpc.selected.id
   egress {
     from_port   = 0
@@ -90,7 +90,7 @@ resource "aws_security_group" "web-sg-asg" {
 }
 ## ELB
 resource "aws_security_group" "web-sg-elb" {
-  name   = "${var.env}-sg-elb"
+  name   = "${var.env}-${var.project_name}-sg-elb"
   vpc_id = data.aws_vpc.selected.id
   egress {
     from_port   = 0
@@ -133,7 +133,7 @@ resource "aws_autoscaling_group" "web-asg" {
 
   tag {
     key                 = "name"
-    value               = "${var.env}-asg"
+    value               = "${var.env}-${var.project_name}-asg"
     propagate_at_launch = true
   }
   lifecycle {
@@ -143,7 +143,7 @@ resource "aws_autoscaling_group" "web-asg" {
 
 # ELB
 resource "aws_elb" "web-elb" {
-  name            = "${var.env}-elb"
+  name            = "${var.env}-${var.project_name}-elb"
   subnets         = [data.aws_subnet.subnet-public-1.id, data.aws_subnet.subnet-public-2.id, data.aws_subnet.subnet-public-3.id]
   security_groups = [aws_security_group.web-sg-elb.id]
 

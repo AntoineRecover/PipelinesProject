@@ -35,8 +35,8 @@ pipeline {
                             sh "ls"
                             
                             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
-                                sh "terraform init -backend-config='bucket=cicdantoinec' -backend-config='key=$APP_NAME/$ENV/webserv.tfstate' -backend-config='region=eu-west-3'"
-                                sh "terraform apply -auto-approve -var='ami_name=$ami_name' -var='port=$port'" 
+                                sh "terraform init -backend-config='bucket=cicdantoinec' -backend-config='key=$PROJECT_NAME/$ENV/webserv.tfstate' -backend-config='region=eu-west-3'"
+                                sh "terraform apply -auto-approve -var='project_name=$PROJECT_NAME' -var='env=$ENV' -var='port=$port'" 
                             }
                         }
                     }
