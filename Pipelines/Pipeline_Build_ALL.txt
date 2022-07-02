@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+    environment {
+        GitBranch = "main"
+        EC2_IP = "$EC2IP"
+    }
+    stages {
+        stage ("Clean Jenkins workspace before start") {
+            steps {
+                cleanWs()
+            }
+        }
+        stage ('Invoke_pipeline_Build_AMI') {
+            steps {
+                build job: 'BuildAMI', parameters: [
+                string(name: 'EC2IP', value: "$EC2IP"),
+                string(name: 'region', value: "$region"),
+                string(name: 'ENV', value: "$ENV"),
+                string(name: 'GitCredentials', value: "$GitCredentials"),
+                string(name: 'subnet_id', value: "$subnet_id"),
+                string(name: 'project_name', value: "$project_name"),
+                string(name: 'port', value: "$port"),
+                string(name: 'pcks', value: "$pcks")
+                ]
+            }
+        }
+        stage ('Invoke_pipeline_Deploy_Infra') {
+            steps {
+                build job: 'deploy_infra', parameters: [
+                string(name: 'EC2IP', value: "$EC2IP"),
+                string(name: 'ENV', value: "$ENV"),
+                string(name: 'GitCredentials', value: "$GitCredentials"),
+                string(name: 'PROJECT_NAME', value: "$project_name")
+                ]
+            }
+        }
+        stage ('Invoke_pipeline_Deploy_WebServ') {
+            steps {
+                build job: 'Build_webserv', parameters: [
+                string(name: 'EC2IP', value: "$EC2IP"),
+                string(name: 'ENV', value: "$ENV"),
+                string(name: 'GitCredentials', value: "$GitCredentials"),
+                string(name: 'PROJECT_NAME', value: "$project_name"),
+                string(name: 'port', value: "$port")
+                ]
+            }
+        }
+    }
+}
