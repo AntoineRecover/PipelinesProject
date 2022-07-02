@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    environment {
+        GitBranch = "main"
+        EC2_IP = "$EC2IP"
+    }
+    stages {
+        stage ("Clean Jenkins workspace before start") {
+            steps {
+                cleanWs()
+            }
+        }
+        
+        stage ("checkout_git") {
+            steps {
+                sh "pwd"
+                dir("Destroy_AMI") {
+                    sh "pwd"
+                    git(
+                        url: 'git@github.com:AntoineRecover/PipelinesProject.git',
+                        credentialsId: "$GitCredentials",
+                        branch: "${GitBranch}"
+                    )
+                    sh "ls"
+                }
+            }
+        }
+        
+        stage ("Destroy_AMI"){
+            steps {
+                dir("Destroy_AMI"){
+
+                    dir("Packer") {
+                        sh "pwd"
+                        sh "ls"
+
+                        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+                            sh "amicleaner --mapping-key name --mapping-values $ENV-$APP_NAME-AMI --keep-previous -1 --ami-min-days -1 -f"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
