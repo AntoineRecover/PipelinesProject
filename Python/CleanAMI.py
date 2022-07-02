@@ -1,5 +1,5 @@
 import sys
-import boto
+import boto.ec2
 
 def ec2_deregister_ami(ec2):
 	images = ec2.get_all_images(owners="self", filters = {'name':str(sys.argv[2])})
