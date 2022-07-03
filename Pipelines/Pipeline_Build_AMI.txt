@@ -11,6 +11,33 @@ pipeline {
             }
         }
 
+        stage("Parametrage") {
+            steps {
+                script { 
+                    properties([
+                        parameters([
+                            choice(
+                                choices: ['dev', 'prod', 'preprod'],
+                                name: 'ENV'
+                            ),
+                            string(
+                                defaultValue: '',
+                                name: 'EC2IP'
+                            ),
+                            string(
+                                defaultValue: '',
+                                name: 'GitCredentials'
+                            ),
+                            string(
+                                defaultValue: '',
+                                name: 'PROJECT_NAME'
+                            )
+                        ])
+                    ])
+                }
+            }
+        }
+
         stage ("checkout_git") {
             steps {
                 sh "pwd"
