@@ -1,5 +1,5 @@
-List<String> pipelines = Arrays.asList("Build_AMI", "Deploy_Infra", "Build_ALL")
-List<String> d_pipelines = Arrays.asList("Destroy_AMI", "Destroy_Infra", "Destroy_ALL")
+List<String> pipelines = Arrays.asList("Build_AMI", "Deploy_Infra", "Deploy_WebSite", "Build_ALL")
+List<String> d_pipelines = Arrays.asList("Destroy_AMI", "Destroy_Infra", "Destroy_WebSite")
 
 for (String pipeline : pipelines) {
     def job = hudson.model.Hudson.instance.getJob(pipeline)
