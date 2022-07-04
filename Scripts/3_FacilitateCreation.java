@@ -2,18 +2,16 @@ import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import hudson.model.*;
   
-def jobName = 'Test_Script_Groovy'
+def job1 = 'Build_AMI'
 
+// Pipeline
 script = '''
 pipeline {
     agent any
     options { disableConcurrentBuilds() }
     environment {
         GitBranch = "main"
-        EC2_IP = "$EC2_IP_Script"
-        ENV = "$ENV_Script"
-        BOOL = "$BOOL_Script"
-        TXT = "$TXT_Script"
+        EC2_IP = "$EC2IP"
     }
     stages {
         stage ("Clean Jenkins workspace before start") {
@@ -22,34 +20,51 @@ pipeline {
             }
         }
 
-        stage ("Echo var") {
+        stage ("checkout_git") {
             steps {
                 sh "pwd"
-                sh "echo $EC2_IP"
-                sh "echo $ENV"
-                sh "echo $BOOL"
-                sh "echo $TXT"
-                
+                dir("Build_WebAMI") {
+                    sh "pwd"
+                    git(
+                        url: "git@github.com:AntoineRecover/PipelinesProject.git",
+                        credentialsId: "$GitCredentials",
+                        branch: "${GitBranch}"
+                    )
+                    sh "ls"
+                }
+            }
+        }
+
+        stage ("Build AMI") {
+            steps {
+                dir("Build_WebAMI") {
+                    dir("Packer") {
+                        sh "pwd"
+                        sh "ls"
+                        
+                        wrap([$class: "AnsiColorBuildWrapper", "colorMapName": "xterm"]){
+                            sh "packer init ."
+                            sh "packer fmt ."
+                            sh "packer validate ."
+                            sh "packer build -var region=$region -var subnet_id=$subnet_id -var ami_name=$project_name -var port=$port -var pcks=$pcks -var env=$ENV . "
+                        }
+                    }
+                }
             }
         }
     }
 }
 '''
-// Create Project
-p = Jenkins.instance.createProject(WorkflowJob, jobName)
-p.setDefinition(new CpsFlowDefinition(script, false))
+
+p = Jenkins.instance.createProject(WorkflowJob, job1)
+p.setDefinition(new CpsFlowDefinition(script1, false))
 p.save()
 
-// Create Params
-def params = []
+def params1 = []
+params1 += new StringParameterValue('ENV', 'dev')
+params1 += new StringParameterValue('EC2IP', '13.38.80.144')
+params1 += new StringParameterValue('GitCredentials', 'GitCred')
+params1 += new StringParameterValue('PROJECT_NAME', 'Build_AMI_Amelioration')
+def pA1 = new ParametersAction(params1)
 
-// Assign Params
-params += new StringParameterValue('EC2_IP_Script', '0.0.0.0')
-params += new StringParameterValue('ENV_Script', 'dev')
-params += new StringParameterValue('BOOL_Script', 'false')
-params += new StringParameterValue('TXT_Script', 'Lorem Ipsum')
-
-def paramsAction = new ParametersAction(params)
-
-// Schedule Project
-Hudson.instance.queue.schedule(p, 0, null, paramsAction)
+Hudson.instance.queue.schedule(p, 0, null, pA1)
