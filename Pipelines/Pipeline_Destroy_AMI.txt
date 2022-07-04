@@ -35,7 +35,7 @@ pipeline {
                         sh "ls"
 
                         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
-                            sh "amicleaner --mapping-key name --mapping-values $ENV-$APP_NAME-AMI --keep-previous -1 --ami-min-days -1 -f"
+                            sh "amicleaner --mapping-key name --mapping-values $ENV-$APP_NAME --keep-previous -1 --ami-min-days -1 -f"
                         }
                     }
                 }
